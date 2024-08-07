@@ -1,0 +1,59 @@
+package views
+
+
+templ Loading() {
+	<span class="loading loading-spinner text-primary loading-lg"></span>
+}
+
+templ template() {
+	<!DOCTYPE html>
+	<html lang="en" data-theme="webiliti">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Welcome</title>
+			
+		</head>
+		<body>
+			{ children... }
+			<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script src="https://unpkg.com/htmx.org@2.0.1" integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/" crossorigin="anonymous"></script>
+			<script src="https://unpkg.com/htmx-ext-response-targets@2.0.0/response-targets.js"></script>
+		</body>
+	</html>
+}
+
+templ Home() {
+	@template(){
+		<div class="w-full h-full flex flex-col items-center min-h-screen px-4 py-12 sm:px-6 lg:px-8">
+			<div class="text-center border-b-2 py-5">
+				<h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+					Welcome to BackMeUp
+				</h1>
+				<p class="text-base leading-7">
+					Backup files easily
+				</p>
+			</div>
+			<div hx-ext="response-targets" class="w-full my-5 flex flex-col items-center justify-center">
+				<form 
+					hx-post="/"
+					hx-indicator="#indicator"
+					hx-target="#results"
+					hx-target-error="#results"
+					class="flex gap-2 w-1/2">
+					<input
+						type="text"
+						name="url"
+						placeholder="Type here"
+						class="input input-bordered input-primary w-full" />
+					<button class="btn btn-primary">Scan</button>
+					<div id="indicator" class="htmx-indicator">
+						@Loading()
+					</div>
+				</form>
+				<div id="results"></div>
+			</div>
+		</div>
+	}
+}
