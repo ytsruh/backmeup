@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -9,21 +10,30 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
+	"ytsruh.com/backmeup/utils"
 	"ytsruh.com/backmeup/views"
 )
 
 func main() {
+	// Create a directory to store zip files
+	err := os.MkdirAll("zips", 0755) // 0755 is the file permission (read and write permission)
+	if err != nil {
+		log.Fatalf("error creating temp directory: %s", err)
+	}
 	e := echo.New()
 	e.GET("/", func(c echo.Context) error {
 		return Render(c, http.StatusOK, views.Home())
 	})
 	e.POST("/", Scan)
+	e.GET("/dl/:zip", func(c echo.Context) error {
+		return c.File("zips/" + c.Param("zip"))
+	})
 	e.GET("/time", func(c echo.Context) error {
 		return Render(c, http.StatusOK, views.TimeComponent(time.Now()))
 	})
-	e.GET("/404", func(c echo.Context) error {
-		return Render(c, http.StatusNotFound, views.NotFoundComponent())
-	})
+
+	utils.CleanUpZips()
+	utils.StartCronJobs()
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
