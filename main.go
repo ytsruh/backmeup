@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,11 +14,20 @@ import (
 )
 
 func main() {
+	// Create a directory to store zip files
+	err := os.MkdirAll("zips", 0755) // 0755 is the file permission (read and write permission)
+	if err != nil {
+		log.Fatalf("error creating temp directory: %s", err)
+	}
 	e := echo.New()
 	e.GET("/", func(c echo.Context) error {
 		return Render(c, http.StatusOK, views.Home())
 	})
 	e.POST("/", Scan)
+	e.GET("/dl/:zip", func(c echo.Context) error {
+		log.Println(c.Param("zip"))
+		return c.String(http.StatusOK, "ok")
+	})
 	e.GET("/time", func(c echo.Context) error {
 		return Render(c, http.StatusOK, views.TimeComponent(time.Now()))
 	})
