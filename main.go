@@ -10,6 +10,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
+	"ytsruh.com/backmeup/utils"
 	"ytsruh.com/backmeup/views"
 )
 
@@ -33,6 +34,8 @@ func main() {
 	e.GET("/404", func(c echo.Context) error {
 		return Render(c, http.StatusNotFound, views.NotFoundComponent())
 	})
+
+	utils.StartCronJobs()
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()

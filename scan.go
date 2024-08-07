@@ -10,6 +10,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/labstack/echo/v4"
+	"ytsruh.com/backmeup/utils"
 	"ytsruh.com/backmeup/views"
 )
 
@@ -110,7 +111,7 @@ func getLinks(url string) (Links, error) {
 }
 
 func saveFiles(links []string, ext string) (string, error) {
-	rand := GenRandomString(10)
+	rand := utils.GenRandomString(10)
 	path := "temp" + rand + "/"
 	for _, link := range links {
 		//fmt.Println("LINK:" + link)
@@ -121,7 +122,7 @@ func saveFiles(links []string, ext string) (string, error) {
 		}
 		defer resp.Body.Close()
 		// Create a new file and check a temp directory exists
-		tmpName := GenRandomString(10) + ext
+		tmpName := utils.GenRandomString(10) + ext
 		err = os.MkdirAll(path, 0755) // 0755 is the file permission (read and write permission)
 		if err != nil {
 			fmt.Printf("error creating temp directory: %s", err)
@@ -142,7 +143,7 @@ func saveFiles(links []string, ext string) (string, error) {
 	}
 	// Create a new zip file
 	var dstfile = "zips/" + rand + ".zip"
-	err := Zip(path, dstfile)
+	err := utils.Zip(path, dstfile)
 	if err != nil {
 		fmt.Printf("error creating zip file: %s", err)
 		return "", err
