@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"net/http"
 	"strings"
@@ -51,8 +52,13 @@ func getLinks(url string) (Links, error) {
 	if err != nil {
 		return links, err
 	}
+	// Create a Transport that doesn't do any SSL verification
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
 
-	client := &http.Client{}
+	// Now create a new client with that Transport
+	client := &http.Client{Transport: tr}
 	resp, err := client.Do(req)
 	if err != nil {
 		return links, err
