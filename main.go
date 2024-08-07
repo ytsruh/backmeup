@@ -31,10 +31,8 @@ func main() {
 	e.GET("/time", func(c echo.Context) error {
 		return Render(c, http.StatusOK, views.TimeComponent(time.Now()))
 	})
-	e.GET("/404", func(c echo.Context) error {
-		return Render(c, http.StatusNotFound, views.NotFoundComponent())
-	})
 
+	utils.CleanUpZips()
 	utils.StartCronJobs()
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)

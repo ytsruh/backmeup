@@ -32,15 +32,23 @@ func Scan(c echo.Context) error {
 		fmt.Printf("Error: %s\n", err)
 		return c.String(http.StatusInternalServerError, "internal server error")
 	}
-	status := fmt.Sprintf("XLS Count: %d, PDF Count: %d", links.XLSCount, links.PDFCount)
-	// Save files & generate a zip file
-	zipFile, err := saveFiles(links.PDF, ".pdf")
+	status := fmt.Sprintf("PDF Count: %d, XLS Count: %d", links.PDFCount, links.XLSCount)
+	fmt.Println(status)
+	// Save files & generate zip files
+	pdfZip, err := saveFiles(links.PDF, ".pdf")
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 		return c.String(http.StatusInternalServerError, "error saving pdf files")
 	}
-	//fmt.Printf("Zip File: %s\n", zipFile)
-	return Render(c, http.StatusNotFound, views.ResultsComponent(status, zipFile))
+
+	xlsZip, err := saveFiles(links.XLS, ".xls")
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
+		return c.String(http.StatusInternalServerError, "error saving xls files")
+	}
+
+	//fmt.Printf("Zip File: %s,%s\n", pdfZip, xlsZip)
+	return Render(c, http.StatusNotFound, views.ResultsComponent(status, pdfZip, xlsZip))
 }
 
 type Links struct {
@@ -111,8 +119,11 @@ func getLinks(url string) (Links, error) {
 }
 
 func saveFiles(links []string, ext string) (string, error) {
+	if len(links) == 0 {
+		return "", nil
+	}
 	rand := utils.GenRandomString(10)
-	path := "temp" + rand + "/"
+	path := "temp-" + rand + "/"
 	for _, link := range links {
 		//fmt.Println("LINK:" + link)
 		resp, err := http.Get(link)
