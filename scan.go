@@ -126,7 +126,11 @@ func saveFiles(links []string, ext string) (string, error) {
 	path := "temp-" + rand + "/"
 	for _, link := range links {
 		//fmt.Println("LINK:" + link)
-		resp, err := http.Get(link)
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		client := &http.Client{Transport: tr}
+		resp, err := client.Get(link)
 		if err != nil {
 			fmt.Printf("error downloading file: %s", err)
 			return "", err
