@@ -25,6 +25,7 @@ func Scan(c echo.Context) error {
 	}
 	links, err := getLinks(form.Url)
 	if err != nil {
+		fmt.Printf("Error: %s\n", err)
 		return c.String(http.StatusInternalServerError, "internal server error")
 	}
 	fmt.Println(links.PDFCount)
