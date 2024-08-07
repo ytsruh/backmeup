@@ -25,8 +25,7 @@ func main() {
 	})
 	e.POST("/", Scan)
 	e.GET("/dl/:zip", func(c echo.Context) error {
-		log.Println(c.Param("zip"))
-		return c.String(http.StatusOK, "ok")
+		return c.File("zips/" + c.Param("zip"))
 	})
 	e.GET("/time", func(c echo.Context) error {
 		return Render(c, http.StatusOK, views.TimeComponent(time.Now()))

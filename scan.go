@@ -32,13 +32,13 @@ func Scan(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "internal server error")
 	}
 	status := fmt.Sprintf("XLS Count: %d, PDF Count: %d", links.XLSCount, links.PDFCount)
-
+	// Save files & generate a zip file
 	zipFile, err := saveFiles(links.PDF, ".pdf")
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 		return c.String(http.StatusInternalServerError, "error saving pdf files")
 	}
-	fmt.Printf("Zip File: %s\n", zipFile)
+	//fmt.Printf("Zip File: %s\n", zipFile)
 	return Render(c, http.StatusNotFound, views.ResultsComponent(status, zipFile))
 }
 
@@ -140,15 +140,18 @@ func saveFiles(links []string, ext string) (string, error) {
 			return "", err
 		}
 	}
-	// Create a new zip file within our temp-images directory
-	zipId := GenRandomString(10)
-	var dstfile = "zips/" + zipId + ".zip"
-	Zip(path, dstfile)
-	// Remove all diles from temp directory
-	err := os.RemoveAll(path)
+	// Create a new zip file
+	var dstfile = "zips/" + rand + ".zip"
+	err := Zip(path, dstfile)
+	if err != nil {
+		fmt.Printf("error creating zip file: %s", err)
+		return "", err
+	}
+	// Remove all files from temp directory
+	err = os.RemoveAll(path)
 	if err != nil {
 		fmt.Printf("error removing temp directory: %s", err)
 		return "", err
 	}
-	return zipId, nil
+	return rand, nil
 }
