@@ -51,18 +51,23 @@ func Scan(c echo.Context) error {
 	return Render(c, http.StatusNotFound, views.ResultsComponent(status, pdfZip, xlsZip))
 }
 
+type Document struct {
+	Name string
+	URL  string
+}
+
 type Links struct {
-	PDF      []string
+	PDF      []Document
 	PDFCount int
-	XLS      []string
+	XLS      []Document
 	XLSCount int
 }
 
 func getLinks(url string) (Links, error) {
 	links := Links{
-		PDF:      []string{},
+		PDF:      []Document{},
 		PDFCount: 0,
-		XLS:      []string{},
+		XLS:      []Document{},
 		XLSCount: 0,
 	}
 	req, err := http.NewRequest("GET", url, nil)
@@ -88,17 +93,23 @@ func getLinks(url string) (Links, error) {
 	// Get all links from page
 	doc.Find("a[href]").Each(func(i int, s *goquery.Selection) {
 		href, exists := s.Attr("href")
+		document := Document{}
 		if exists {
-			trimmed := strings.TrimSpace(href)
+			trimmedLink := strings.TrimSpace(href)
+			trimmedName := strings.TrimSpace(s.Text())
 			if strings.HasSuffix(href, ".pdf") {
 				links.PDFCount++
 				// Check if link is relative
 				if strings.HasPrefix(href, "/") {
 					// Get domain from url
 					url := strings.Split(url, "/")[2]
-					links.PDF = append(links.PDF, "https://"+url+trimmed)
+					document.URL = "https://" + url + trimmedLink
+					document.Name = trimmedName
+					links.PDF = append(links.PDF, document)
 				} else {
-					links.PDF = append(links.PDF, trimmed)
+					document.URL = trimmedLink
+					document.Name = trimmedName
+					links.PDF = append(links.PDF, document)
 				}
 			}
 			if strings.HasSuffix(href, ".xlsx") {
@@ -106,10 +117,13 @@ func getLinks(url string) (Links, error) {
 				// Check if link is relative
 				if strings.HasPrefix(href, "/") {
 					// Get domain from url
-					url := strings.Split(url, "/")[2]
-					links.XLS = append(links.XLS, url+trimmed)
+					document.URL = "https://" + url + trimmedLink
+					document.Name = trimmedName
+					links.XLS = append(links.PDF, document)
 				} else {
-					links.XLS = append(links.XLS, trimmed)
+					document.URL = trimmedLink
+					document.Name = trimmedName
+					links.XLS = append(links.PDF, document)
 				}
 			}
 		}
@@ -118,7 +132,7 @@ func getLinks(url string) (Links, error) {
 	return links, nil
 }
 
-func saveFiles(links []string, ext string) (string, error) {
+func saveFiles(links []Document, ext string) (string, error) {
 	if len(links) == 0 {
 		return "", nil
 	}
@@ -130,14 +144,14 @@ func saveFiles(links []string, ext string) (string, error) {
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
 		client := &http.Client{Transport: tr}
-		resp, err := client.Get(link)
+		resp, err := client.Get(link.URL)
 		if err != nil {
 			fmt.Printf("error downloading file: %s", err)
 			return "", err
 		}
 		defer resp.Body.Close()
 		// Create a new file and check a temp directory exists
-		tmpName := utils.GenRandomString(10) + ext
+		tmpName := link.Name + ext
 		err = os.MkdirAll(path, 0755) // 0755 is the file permission (read and write permission)
 		if err != nil {
 			fmt.Printf("error creating temp directory: %s", err)
