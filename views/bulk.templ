@@ -1,29 +1,32 @@
 package views
 
-templ Home() {
+templ Bulk() {
 	@template() {
 		<div class="w-full h-full flex flex-col items-center min-h-screen px-4 py-12 sm:px-6 lg:px-8">
 			<div class="text-center border-b-2 py-5">
 				<h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-					Backup files from a URL
+					Bulk Download/Backup files
 				</h1>
-				<p class="leading-7 pt-2">Please enter a URL to scan the page for files</p>
+				<p class="leading-7 pt-2">
+					Please enter a comma separated list of URLs
+					<span class="text-xs">(max 25 URLs)</span>
+				</p>
 			</div>
 			<div hx-ext="response-targets" class="w-full my-5 flex flex-col items-center justify-center">
 				<form
-					hx-post="/"
+					hx-post="/bulk"
 					hx-indicator="#indicator"
 					hx-target="#results"
 					hx-target-error="#results"
-					class="flex gap-2 w-1/2"
+					class="flex flex-col gap-2 w-1/2"
 				>
-					<input
-						type="text"
-						name="url"
+					<textarea
+						name="urls"
+						rows="10"
 						placeholder="Type here"
-						class="input input-bordered input-primary w-full"
-					/>
-					<button class="btn btn-primary">Scan</button>
+						class="textarea textarea-bordered textarea-primary w-full"
+					></textarea>
+					<button class="btn btn-primary">Download</button>
 					<div id="indicator" class="htmx-indicator">
 						@Loading()
 					</div>
