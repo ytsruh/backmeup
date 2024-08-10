@@ -13,6 +13,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"ytsruh.com/backmeup/utils"
+	"ytsruh.com/backmeup/views"
 )
 
 type BulkForm struct {
@@ -103,7 +104,8 @@ func Bulk(c echo.Context) error {
 	}
 
 	// Create a new zip file
-	var dstfile = "zips/" + utils.GenRandomString(10) + ".zip"
+	zipName := utils.GenRandomString(10)
+	dstfile := "zips/" + zipName + ".zip"
 	err = utils.Zip(tempPath, dstfile)
 	if err != nil {
 		fmt.Printf("error creating zip file: %s", err)
@@ -116,5 +118,6 @@ func Bulk(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "error removing temp directory")
 	}
 
-	return c.String(http.StatusOK, dstfile)
+	status := fmt.Sprintf("File Count: %d", len(urls))
+	return Render(c, http.StatusOK, views.BulkResultsComponent(status, zipName))
 }

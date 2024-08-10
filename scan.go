@@ -48,7 +48,7 @@ func Scan(c echo.Context) error {
 	}
 
 	//fmt.Printf("Zip File: %s,%s\n", pdfZip, xlsZip)
-	return Render(c, http.StatusNotFound, views.ResultsComponent(status, pdfZip, xlsZip))
+	return Render(c, http.StatusOK, views.ResultsComponent(status, pdfZip, xlsZip))
 }
 
 type Document struct {
