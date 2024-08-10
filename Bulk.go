@@ -43,8 +43,12 @@ func Bulk(c echo.Context) error {
 			return c.String(http.StatusBadRequest, "url is not valid")
 		}
 	}
+	// Check if urls are more than 25
 	//fmt.Printf("Urls = %v\n", len(urls))
 	//fmt.Println(urls)
+	if len(urls) >= 25 {
+		return c.String(http.StatusBadRequest, "too many urls, max 25 allowed")
+	}
 
 	// Check if url is a file, get the extension and save the file to temp directory
 	tempPath := "temp-" + utils.GenRandomString(10) + "/" // Create a new temp directory outside of range

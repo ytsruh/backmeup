@@ -52,7 +52,7 @@ func template() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\" data-theme=\"wireframe\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"shortcut icon\" href=\"/favicon.ico\" type=\"image/x-icon\"><title>Welcome to Backup</title></head><body><div class=\"navbar bg-base-100\"><div class=\"flex-1\"><a href=\"/\" class=\"px-2 text-lg\">BackMeUp</a></div><div class=\"flex-none\"><ul class=\"menu menu-horizontal px-1\"><li><a href=\"/\">Home</a></li><li><a href=\"/bulk\">Bulk</a></li></ul></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\" data-theme=\"wireframe\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"shortcut icon\" href=\"favicon.ico\" type=\"image/x-icon\"><title>Welcome to Backup</title></head><body><div class=\"navbar bg-base-100\"><div class=\"flex-1\"><a href=\"/\" class=\"px-2 text-lg\">BackMeUp</a></div><div class=\"flex-none\"><ul class=\"menu menu-horizontal px-1\"><li><a href=\"/\">Home</a></li><li><a href=\"/bulk\">Bulk</a></li></ul></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
