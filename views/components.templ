@@ -1,11 +1,5 @@
 package views
 
-import "time"
-
-templ TimeComponent(d time.Time) {
-	<div>{ d.String() }</div>
-}
-
 templ NotFoundComponent() {
 	<div>404 - Not found</div>
 }
@@ -14,16 +8,16 @@ templ ResultsComponent(status string, pdfZip string, xlsZip string) {
 	<div class="flex flex-col items-center justify-center py-5">
 		<p class="py-2">{ status }</p>
 		<div class="flex items-center justify-center gap-5">
-		if pdfZip != "" {
-			<a href={ templ.URL("/dl/"+pdfZip+".zip") } target="_blank" class="btn btn-primary">
-				Download PDF's
-			</a>
-		}
-		if xlsZip != "" {
-			<a href={ templ.URL("/dl/"+xlsZip+".xlsZip") } target="_blank" class="btn btn-primary">
-				Download XLS's
-			</a>
-		}
+			if pdfZip != "" {
+				<a href={ templ.URL("/dl/" + pdfZip + ".zip") } target="_blank" class="btn btn-primary">
+					Download PDF's
+				</a>
+			}
+			if xlsZip != "" {
+				<a href={ templ.URL("/dl/" + xlsZip + ".xlsZip") } target="_blank" class="btn btn-primary">
+					Download XLS's
+				</a>
+			}
 		</div>
 	</div>
 }

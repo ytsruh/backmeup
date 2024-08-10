@@ -8,7 +8,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func Home() templ.Component {
+func Bulk() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -38,7 +38,7 @@ func Home() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full h-full flex flex-col items-center min-h-screen px-4 py-12 sm:px-6 lg:px-8\"><div class=\"text-center border-b-2 py-5\"><h1 class=\"text-4xl font-bold tracking-tight sm:text-5xl\">Backup files from a URL</h1><p class=\"leading-7 pt-2\">Please enter a URL to scan the page for files</p></div><div hx-ext=\"response-targets\" class=\"w-full my-5 flex flex-col items-center justify-center\"><form hx-post=\"/\" hx-indicator=\"#indicator\" hx-target=\"#results\" hx-target-error=\"#results\" class=\"flex gap-2 w-1/2\"><input type=\"text\" name=\"url\" placeholder=\"Type here\" class=\"input input-bordered input-primary w-full\"> <button class=\"btn btn-primary\">Scan</button><div id=\"indicator\" class=\"htmx-indicator\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full h-full flex flex-col items-center min-h-screen px-4 py-12 sm:px-6 lg:px-8\"><div class=\"text-center border-b-2 py-5\"><h1 class=\"text-4xl font-bold tracking-tight sm:text-5xl\">Bulk Download/Backup files</h1><p class=\"leading-7 pt-2\">Please enter a comma separated list of URLs <span class=\"text-xs\">(max 25 URLs)</span></p></div><div hx-ext=\"response-targets\" class=\"w-full my-5 flex flex-col items-center justify-center\"><form hx-post=\"/bulk\" hx-indicator=\"#indicator\" hx-target=\"#results\" hx-target-error=\"#results\" class=\"flex flex-col gap-2 w-1/2\"><textarea name=\"urls\" rows=\"10\" placeholder=\"Type here\" class=\"textarea textarea-bordered textarea-primary w-full\"></textarea> <button class=\"btn btn-primary\">Download</button><div id=\"indicator\" class=\"htmx-indicator\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

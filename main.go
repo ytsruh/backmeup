@@ -10,6 +10,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"ytsruh.com/backmeup/utils"
 	"ytsruh.com/backmeup/views"
 )
@@ -20,7 +21,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("error creating temp directory: %s", err)
 	}
+	// Start server and register middlewares
 	e := echo.New()
+	e.Use(middleware.Recover())
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method} status=${status} uri=${uri}\n",
+	}))
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root: "public",
+	}))
+	e.Use(middleware.Secure())
+
+	// Register routes
 	e.GET("/", func(c echo.Context) error {
 		return Render(c, http.StatusOK, views.Home())
 	})
@@ -28,17 +40,18 @@ func main() {
 	e.GET("/dl/:zip", func(c echo.Context) error {
 		return c.File("zips/" + c.Param("zip"))
 	})
-	e.GET("/time", func(c echo.Context) error {
-		return Render(c, http.StatusOK, views.TimeComponent(time.Now()))
+	e.GET("/bulk", func(c echo.Context) error {
+		return Render(c, http.StatusOK, views.Bulk())
 	})
+	e.POST("/bulk", Bulk)
 
+	// Start cron jobs
 	utils.CleanUpZips()
 	utils.StartCronJobs()
 
+	// Start server
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
-
-	// Start server
 	go func() {
 		e.Logger.Info("Starting server on port 1323")
 		if err := e.Start(":1323"); err != nil && err != http.ErrServerClosed {
