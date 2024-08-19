@@ -11,6 +11,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"golang.org/x/time/rate"
 	"ytsruh.com/backmeup/utils"
 	"ytsruh.com/backmeup/views"
 )
@@ -24,6 +25,7 @@ func main() {
 	// Start server and register middlewares
 	e := echo.New()
 	e.Use(middleware.Recover())
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(rate.Limit(5)))) // 5 reqs per second
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method} status=${status} uri=${uri}\n",
 	}))
